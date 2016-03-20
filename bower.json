@@ -1,21 +1,23 @@
 {
   "name": "me-show-transition",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "homepage": "https://github.com/meibegger/me-show-transition",
   "authors": [
     "Mandana Eibegger <scripts@schoener.at>"
   ],
-  "description": "A utility script to \"lock\" the main content of the page to prevent scrolling of the content in the background if you, for instance, open a modal dialog on top of the page",
+  "description": "A highly customizable script to enable CSS transitions on toggle of the display property.",
   "main": "src/me-show-transition.js",
   "moduleType": [
     "amd"
   ],
   "keywords": [
-    "usability",
-    "scroll",
-    "scrolling background",
-    "lock view",
-    "modal",
+    "transition",
+    "toggle display",
+    "show",
+    "hide",
+    "animation",
+    "accessibility",
+    "a11y",
     "javascript"
   ],
   "license": "MIT",
