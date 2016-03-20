@@ -1,0 +1,105 @@
+{
+  "clean": [
+    "dist/**/.DS_Store"
+  ],
+  "scripts": {
+    "src": [
+      "src/*.js"
+    ],
+    "require": [
+      {
+        "name": "bundle",
+        "suffix": ".bundle",
+        "options": {
+          "baseUrl": "src/",
+          "name": "almond",
+          "include": [
+            "meShowTransition"
+          ],
+          "out": "dist/me-show-transition",
+          "wrap": {
+            "startFile": "src/wrap/start.frag",
+            "endFile": "src/wrap/end.frag"
+          },
+          "paths": {
+            "almond": "../node_modules/almond/almond",
+            "meShowTransition": "index",
+            "meTools": "me-tools.custom",
+            "variable": "../node_modules/me-tools/src/fn/variable",
+            "element": "../node_modules/me-tools/src/fn/element",
+            "event": "../node_modules/me-tools/src/fn/event"
+          }
+        }
+      },
+      {
+        "name": "bundle-ie9",
+        "suffix": ".bundle.ie9",
+        "options": {
+          "baseUrl": "src/",
+          "name": "almond",
+          "include": [
+            "meShowTransition",
+            "classListPolyfill",
+            "animationFramePolyfill"
+          ],
+          "out": "dist/me-show-transition",
+          "wrap": {
+            "startFile": "src/wrap/start.frag",
+            "endFile": "src/wrap/end.frag"
+          },
+          "paths": {
+            "almond": "../node_modules/almond/almond",
+            "meShowTransition": "index",
+            "meTools": "me-tools.custom",
+            "variable": "../node_modules/me-tools/src/fn/variable",
+            "element": "../node_modules/me-tools/src/fn/element",
+            "event": "../node_modules/me-tools/src/fn/event",
+            "classListPolyfill": "../node_modules/me-polyfills/src/classList",
+            "animationFramePolyfill": "../node_modules/me-polyfills/src/animationFrame"
+          },
+          "shim": {
+            "classListPolyfill": {
+              "exports": "classListPolyfill"
+            },
+            "animationFramePolyfill": {
+              "exports": "animationFramePolyfill"
+            }
+          }
+        }
+      }
+    ],
+    "uglify": {
+      "src": ["src/index.js"],
+      "sourcemap": {
+        "includeContent": false,
+        "sourceRoot" : "../src/"
+      },
+      "rename": "me-show-transition.min.js"
+    },
+    "dest": "dist",
+    "banner": ["/**",
+      " * @license <%= pkg.name %> <%= pkg.version %> Copyright (c) <%= pkg.author %>",
+      " * Available via the <%= pkg.license %> license.",
+      " * see: <%= pkg.homepage %> for details",
+      " */",
+      ""]
+  },
+  "build": [
+    "clean",
+    "scripts-uglify",
+    "scripts-require-bundle",
+    "scripts-require-bundle-min",
+    "scripts-require-bundle-ie9",
+    "scripts-require-bundle-ie9-min"
+  ],
+  "watch": [
+    {
+      "files": [
+        "src/*.js"
+      ],
+      "tasks": [
+        "scripts-require-bundle-min"
+      ]
+    }
+  ]
+}

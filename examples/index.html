@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>meShowHide Example</title>
+
+  <script type="text/javascript" src="../dist/me-show-transition.bundle.min.js"></script>
+
+  <style type="text/css">
+    body {
+      padding: 0;
+      margin: 0;
+    }
+    #toggle {
+      margin: 1rem;
+    }
+
+    #example-container.me-shown {
+      transform: translate(0,0);
+    }
+    #example-container,
+    #example-container.me-hide {
+      width: 10rem;
+      height: 10rem;
+      background: #666;
+      transition: all .5s ease 0s;
+      transform: translate(-100%,0);
+    }
+  </style>
+
+</head>
+<body>
+
+<button type="button" value="Toggle example container" id="toggle">
+  Toggle example container
+</button>
+
+<div id="example-container"></div>
+
+
+<script>
+  var exampleShowTransition = new meShowTransition('example-container'),
+    show = false;
+  document.getElementById('toggle').addEventListener('click', function () {
+    if (show) {
+      exampleShowTransition.hide();
+    } else {
+      exampleShowTransition.show();
+    }
+    show = !show;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "me-show-transition",
+  "version": "0.0.4",
+  "homepage": "https://github.com/meibegger/me-show-transition",
+  "authors": [
+    "Mandana Eibegger <scripts@schoener.at>"
+  ],
+  "description": "A utility script to \"lock\" the main content of the page to prevent scrolling of the content in the background if you, for instance, open a modal dialog on top of the page",
+  "main": "src/me-show-transition.js",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "usability",
+    "scroll",
+    "scrolling background",
+    "lock view",
+    "modal",
+    "javascript"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meibegger/me-show-transition.git"
+  }
+}
