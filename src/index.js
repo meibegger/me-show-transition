@@ -335,23 +335,28 @@
       }
 
       if (!immediate && options.transitionMaxTime) { // transition
+        window.requestAnimationFrame(function () { // wait 2 ticks for the browser to apply beforeHideFn changes
+          window.requestAnimationFrame(function () {
 
-        // before transition
-        if (beforeTransitionFn) {
-          beforeTransitionFn({
-            container: container,
-            immediate: false
+            // before transition
+            if (beforeTransitionFn) {
+              beforeTransitionFn({
+                container: container,
+                immediate: false
+              });
+            }
+
+            // start show transition and listeners
+            container.classList.add(indicators.hide);
+
+            meTools.registerEvent(that,transitionEndElement,'webkitTransitionEnd', _hideTransitionEnd);
+            meTools.registerEvent(that,transitionEndElement,'transitionend', _hideTransitionEnd);
+
+            // set a transition-timeout in case the end-event doesn't fire
+            that.transitionEndTimeout = setTimeout(_hideTransitionEnd, options.transitionMaxTime);
+
           });
-        }
-
-        // start show transition and listeners
-        container.classList.add(indicators.hide);
-
-        meTools.registerEvent(that,transitionEndElement,'webkitTransitionEnd', _hideTransitionEnd);
-        meTools.registerEvent(that,transitionEndElement,'transitionend', _hideTransitionEnd);
-
-        // set a transition-timeout in case the end-event doesn't fire
-        that.transitionEndTimeout = setTimeout(_hideTransitionEnd, options.transitionMaxTime);
+        });
 
       } else { // immediate hide
         hideEnd.call(that);
