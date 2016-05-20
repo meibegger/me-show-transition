@@ -108,11 +108,15 @@
   function markShown () {
     var that = this;
     that.container.classList.add(that.options.indicators.shown);
+    that.container.setAttribute('aria-hidden','false');
+
     return that;
   }
   function markHidden () {
     var that = this;
     that.container.classList.remove(that.options.indicators.shown);
+    that.container.setAttribute('aria-hidden','true');
+
     return that;
   }
 
