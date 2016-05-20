@@ -1,5 +1,5 @@
 /**
- * @license me-show-transition 1.0.0 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * @license me-show-transition 1.0.1 Copyright (c) Mandana Eibegger <scripts@schoener.at>
  * Available via the MIT license.
  * see: https://github.com/meibegger/me-show-transition for details
  */
@@ -1103,11 +1103,15 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
   function markShown () {
     var that = this;
     that.container.classList.add(that.options.indicators.shown);
+    that.container.setAttribute('aria-hidden','false');
+
     return that;
   }
   function markHidden () {
     var that = this;
     that.container.classList.remove(that.options.indicators.shown);
+    that.container.setAttribute('aria-hidden','true');
+
     return that;
   }
 
@@ -1330,23 +1334,28 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
       }
 
       if (!immediate && options.transitionMaxTime) { // transition
+        window.requestAnimationFrame(function () { // wait 2 ticks for the browser to apply beforeHideFn changes
+          window.requestAnimationFrame(function () {
 
-        // before transition
-        if (beforeTransitionFn) {
-          beforeTransitionFn({
-            container: container,
-            immediate: false
+            // before transition
+            if (beforeTransitionFn) {
+              beforeTransitionFn({
+                container: container,
+                immediate: false
+              });
+            }
+
+            // start show transition and listeners
+            container.classList.add(indicators.hide);
+
+            meTools.registerEvent(that,transitionEndElement,'webkitTransitionEnd', _hideTransitionEnd);
+            meTools.registerEvent(that,transitionEndElement,'transitionend', _hideTransitionEnd);
+
+            // set a transition-timeout in case the end-event doesn't fire
+            that.transitionEndTimeout = setTimeout(_hideTransitionEnd, options.transitionMaxTime);
+
           });
-        }
-
-        // start show transition and listeners
-        container.classList.add(indicators.hide);
-
-        meTools.registerEvent(that,transitionEndElement,'webkitTransitionEnd', _hideTransitionEnd);
-        meTools.registerEvent(that,transitionEndElement,'transitionend', _hideTransitionEnd);
-
-        // set a transition-timeout in case the end-event doesn't fire
-        that.transitionEndTimeout = setTimeout(_hideTransitionEnd, options.transitionMaxTime);
+        });
 
       } else { // immediate hide
         hideEnd.call(that);
@@ -1389,3 +1398,9 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
 
   return require('meShowTransition');
 }));
+
+/**
+ * @license me-show-transition 1.0.1 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * Available via the MIT license.
+ * see: https://github.com/meibegger/me-show-transition for details
+ */
