@@ -1,5 +1,5 @@
 /**
- * @license me-show-transition 1.0.1 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * @license me-show-transition 1.0.2 Copyright (c) Mandana Eibegger <scripts@schoener.at>
  * Available via the MIT license.
  * see: https://github.com/meibegger/me-show-transition for details
  */
@@ -1402,7 +1402,7 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
 }));
 
 /**
- * @license me-show-transition 1.0.1 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * @license me-show-transition 1.0.2 Copyright (c) Mandana Eibegger <scripts@schoener.at>
  * Available via the MIT license.
  * see: https://github.com/meibegger/me-show-transition for details
  */
