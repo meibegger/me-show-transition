@@ -1035,7 +1035,7 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
         hide: 'me-hide' // set to the container during the hide-transition
       }
     }
-  ;
+    ;
 
   /*
    ---------------
@@ -1221,26 +1221,27 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
    * @returns {meShowTransition}
    */
   meShowTransition.prototype.show = function (immediate) {
-    var that = this;
+    var
+      that = this,
+      container = that.container;
 
     function _showTransitionEnd () {
       showTransitionEnd.call(that);
     }
 
-    if (immediate || !that.shown) {
+    if (immediate || !that.shown || container.getAttribute('aria-hidden') === 'true') {
 
-      var 
+      var
         options = that.options,
-        
+
         callbacks = options.callbacks,
         beforeShowFn = callbacks.beforeShow,
         beforeTransitionFn = callbacks.beforeShowTransition,
 
         indicators = options.indicators,
-        
-        container = that.container,
+
         transitionEndElement = options.transitionEndElement || container
-      ;
+        ;
 
       // start show (end possible hide-transition)
       hideTransitionEnd.call(that);
@@ -1300,13 +1301,15 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
    * @returns {meShowTransition}
    */
   meShowTransition.prototype.hide = function (immediate) {
-    var that = this;
+    var
+      that = this,
+      container = that.container;
 
     function _hideTransitionEnd () {
       hideTransitionEnd.call(that);
     }
 
-    if (immediate || that.shown) {
+    if (immediate || that.shown || container.getAttribute('aria-hidden') === 'false') {
       var
 
         options = that.options,
@@ -1317,7 +1320,6 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
 
         indicators = options.indicators,
 
-        container = that.container,
         transitionEndElement = options.transitionEndElement || container
         ;
 
