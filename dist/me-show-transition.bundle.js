@@ -1,5 +1,5 @@
 /**
- * @license me-show-transition 1.0.2 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * @license me-show-transition 1.0.3 Copyright (c) Mandana Eibegger <scripts@schoener.at>
  * Available via the MIT license.
  * see: https://github.com/meibegger/me-show-transition for details
  */
@@ -1094,7 +1094,6 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
 
     that.options = {};
     that.container = null;
-    that.shown = false;
     that.transitionEndTimeout = null;
 
     return that;
@@ -1229,7 +1228,7 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
       showTransitionEnd.call(that);
     }
 
-    if (immediate || !that.shown || container.getAttribute('aria-hidden') === 'true') {
+    if (immediate || container.getAttribute('aria-hidden') === 'true') {
 
       var
         options = that.options,
@@ -1245,7 +1244,6 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
 
       // start show (end possible hide-transition)
       hideTransitionEnd.call(that);
-      that.shown = true;
 
       // before show
       if (beforeShowFn) {
@@ -1309,7 +1307,7 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
       hideTransitionEnd.call(that);
     }
 
-    if (immediate || that.shown || container.getAttribute('aria-hidden') === 'false') {
+    if (immediate || container.getAttribute('aria-hidden') === 'false') {
       var
 
         options = that.options,
@@ -1325,7 +1323,6 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
 
       // start hide (end possible show-transition)
       showTransitionEnd.call(that);
-      that.shown = false;
 
       // before hide
       if (beforeHideFn) {
@@ -1402,7 +1399,7 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
 }));
 
 /**
- * @license me-show-transition 1.0.2 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * @license me-show-transition 1.0.3 Copyright (c) Mandana Eibegger <scripts@schoener.at>
  * Available via the MIT license.
  * see: https://github.com/meibegger/me-show-transition for details
  */
