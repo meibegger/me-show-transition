@@ -99,7 +99,6 @@
 
     that.options = {};
     that.container = null;
-    that.shown = false;
     that.transitionEndTimeout = null;
 
     return that;
@@ -234,7 +233,7 @@
       showTransitionEnd.call(that);
     }
 
-    if (immediate || !that.shown || container.getAttribute('aria-hidden') === 'true') {
+    if (immediate || container.getAttribute('aria-hidden') === 'true') {
 
       var
         options = that.options,
@@ -250,7 +249,6 @@
 
       // start show (end possible hide-transition)
       hideTransitionEnd.call(that);
-      that.shown = true;
 
       // before show
       if (beforeShowFn) {
@@ -314,7 +312,7 @@
       hideTransitionEnd.call(that);
     }
 
-    if (immediate || that.shown || container.getAttribute('aria-hidden') === 'false') {
+    if (immediate || container.getAttribute('aria-hidden') === 'false') {
       var
 
         options = that.options,
@@ -330,7 +328,6 @@
 
       // start hide (end possible show-transition)
       showTransitionEnd.call(that);
-      that.shown = false;
 
       // before hide
       if (beforeHideFn) {
