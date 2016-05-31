@@ -3,7 +3,7 @@
  * Uses animationFrame - possibly use a polyfill for older browsers (http://caniuse.com/#feat=requestanimationframe)
  */
 
-;(function(root, factory) {
+(function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     define(['meTools'], factory);
   } else if (typeof exports === 'object') {
@@ -11,7 +11,7 @@
   } else {
     root.meShowTransition = factory(meTools);
   }
-} (this, function(meTools) {
+}(this, function (meTools) {
 
   var
 
@@ -63,7 +63,7 @@
     var that = this;
 
     // prepare arguments
-    if (typeof(show)!=='boolean') {
+    if (typeof(show) !== 'boolean') {
       options = show;
       show = false;
     }
@@ -99,27 +99,31 @@
 
     that.options = {};
     that.container = null;
-    that.transitionEndTimeout = null;
+    that.showTransitionEndTimeout = null;
+    that.hideTransitionEndTimeout = null;
+    that.showing = false;
+    that.hiding = false;
 
     return that;
   }
 
-  function markShown () {
+  function markShown() {
     var that = this;
     that.container.classList.add(that.options.indicators.shown);
-    that.container.setAttribute('aria-hidden','false');
+    that.container.setAttribute('aria-hidden', 'false');
 
     return that;
   }
-  function markHidden () {
+
+  function markHidden() {
     var that = this;
     that.container.classList.remove(that.options.indicators.shown);
-    that.container.setAttribute('aria-hidden','true');
+    that.container.setAttribute('aria-hidden', 'true');
 
     return that;
   }
 
-  function showEnd (immediate) { // end of show
+  function showEnd(immediate) { // end of show
     immediate = immediate || false;
     var
       that = this,
@@ -132,9 +136,12 @@
       });
     }
 
+    that.showing = false;
+
     return that;
   }
-  function hideEnd (immediate) { // end of hide
+
+  function hideEnd(immediate) { // end of hide
     immediate = immediate || false;
     var
       that = this,
@@ -154,10 +161,12 @@
       });
     }
 
+    that.hiding = false;
+
     return that;
   }
 
-  function showTransitionEnd () {
+  function showTransitionEnd() {
     var
       that = this,
       options = that.options,
@@ -167,9 +176,9 @@
       ;
 
     // clear listeners
-    clearTimeout(that.transitionEndTimeout);
-    meTools.unregisterEvent(that,transitionEndElement,'webkitTransitionEnd');
-    meTools.unregisterEvent(that,transitionEndElement,'transitionend');
+    clearTimeout(that.showTransitionEndTimeout);
+    meTools.unregisterEvent(that, transitionEndElement, 'webkitTransitionEnd');
+    meTools.unregisterEvent(that, transitionEndElement, 'transitionend');
 
     // after transition
     if (afterTransitionFn) {
@@ -185,7 +194,7 @@
     return that;
   }
 
-  function hideTransitionEnd () {
+  function hideTransitionEnd() {
     var
       that = this,
       options = that.options,
@@ -195,9 +204,9 @@
       ;
 
     // clear listeners
-    clearTimeout(that.transitionEndTimeout);
-    meTools.unregisterEvent(that,transitionEndElement,'webkitTransitionEnd');
-    meTools.unregisterEvent(that,transitionEndElement,'transitionend');
+    clearTimeout(that.hideTransitionEndTimeout);
+    meTools.unregisterEvent(that, transitionEndElement, 'webkitTransitionEnd');
+    meTools.unregisterEvent(that, transitionEndElement, 'transitionend');
 
     // after transition
     if (afterTransitionFn) {
@@ -229,11 +238,11 @@
       that = this,
       container = that.container;
 
-    function _showTransitionEnd () {
+    function _showTransitionEnd() {
       showTransitionEnd.call(that);
     }
 
-    if (immediate || container.getAttribute('aria-hidden') === 'true') {
+    if (immediate || container.getAttribute('aria-hidden') === 'true' || that.hiding) {
 
       var
         options = that.options,
@@ -247,8 +256,13 @@
         transitionEndElement = options.transitionEndElement || container
         ;
 
-      // start show (end possible hide-transition)
-      hideTransitionEnd.call(that);
+      // remember that we are showing
+      that.showing = true;
+
+      // end possible hide-transition
+      if (that.hiding) {
+        hideTransitionEnd.call(that);
+      }
 
       // before show
       if (beforeShowFn) {
@@ -262,6 +276,13 @@
       container.style.display = 'block';
 
       if (!immediate && options.transitionMaxTime) { // transition
+
+        // init transition-end-handling
+        meTools.registerEvent(that, transitionEndElement, 'webkitTransitionEnd', _showTransitionEnd);
+        meTools.registerEvent(that, transitionEndElement, 'transitionend', _showTransitionEnd);
+        // set a transition-timeout in case the end-event doesn't fire
+        that.showTransitionEndTimeout = setTimeout(_showTransitionEnd, options.transitionMaxTime);
+
         window.requestAnimationFrame(function () { // wait 2 ticks for the browser to apply the visibility
           window.requestAnimationFrame(function () {
 
@@ -279,18 +300,12 @@
             // start show transition and listeners
             container.classList.add(indicators.show);
 
-            meTools.registerEvent(that,transitionEndElement,'webkitTransitionEnd', _showTransitionEnd);
-            meTools.registerEvent(that,transitionEndElement,'transitionend', _showTransitionEnd);
-
-            // set a transition-timeout in case the end-event doesn't fire
-            that.transitionEndTimeout = setTimeout(_showTransitionEnd, options.transitionMaxTime);
-
           });
         });
 
       } else { // immediate show
         markShown.call(that);
-        showEnd.call(that,immediate);
+        showEnd.call(that, immediate);
       }
 
     }
@@ -308,11 +323,11 @@
       that = this,
       container = that.container;
 
-    function _hideTransitionEnd () {
+    function _hideTransitionEnd() {
       hideTransitionEnd.call(that);
     }
 
-    if (immediate || container.getAttribute('aria-hidden') === 'false') {
+    if (immediate || container.getAttribute('aria-hidden') === 'false' || that.showing) {
       var
 
         options = that.options,
@@ -326,8 +341,13 @@
         transitionEndElement = options.transitionEndElement || container
         ;
 
-      // start hide (end possible show-transition)
-      showTransitionEnd.call(that);
+      // remember that we are showing
+      that.hiding = true;
+
+      // end possible show-transition
+      if (that.showing) {
+        showTransitionEnd.call(that);
+      }
 
       // before hide
       if (beforeHideFn) {
@@ -338,6 +358,13 @@
       }
 
       if (!immediate && options.transitionMaxTime) { // transition
+
+        // init transition-end-handling
+        meTools.registerEvent(that, transitionEndElement, 'webkitTransitionEnd', _hideTransitionEnd);
+        meTools.registerEvent(that, transitionEndElement, 'transitionend', _hideTransitionEnd);
+        // set a transition-timeout in case the end-event doesn't fire
+        that.hideTransitionEndTimeout = setTimeout(_hideTransitionEnd, options.transitionMaxTime);
+
         window.requestAnimationFrame(function () { // wait 2 ticks for the browser to apply beforeHideFn changes
           window.requestAnimationFrame(function () {
 
@@ -351,12 +378,6 @@
 
             // start show transition and listeners
             container.classList.add(indicators.hide);
-
-            meTools.registerEvent(that,transitionEndElement,'webkitTransitionEnd', _hideTransitionEnd);
-            meTools.registerEvent(that,transitionEndElement,'transitionend', _hideTransitionEnd);
-
-            // set a transition-timeout in case the end-event doesn't fire
-            that.transitionEndTimeout = setTimeout(_hideTransitionEnd, options.transitionMaxTime);
 
           });
         });
@@ -381,7 +402,8 @@
       ;
 
     // clear listeners
-    clearTimeout(that.transitionEndTimeout);
+    clearTimeout(that.showTransitionEndTimeout);
+    clearTimeout(that.hideTransitionEndTimeout);
     meTools.unregisterEvent(that);
 
     // remove added classes
