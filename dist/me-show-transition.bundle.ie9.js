@@ -1,5 +1,5 @@
 /**
- * @license me-show-transition 1.0.5 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * @license me-show-transition 1.0.6 Copyright (c) Mandana Eibegger <scripts@schoener.at>
  * Available via the MIT license.
  * see: https://github.com/meibegger/me-show-transition for details
  */
@@ -1028,6 +1028,7 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
         afterHide: false
       },
       transitionEndElement: false, // element to listen to the transitionend event on (default is the container); use this if you use transitions on more than 1 element on show/hide to define the element which ends the transitions
+      ignoreChildTransitions: false, // transitionEnd event bubbles - only listen to transitionEnd directly on the container (or transitionEndElement)
       transitionMaxTime: 500, // ms; timeout to end the show/hide transition states in case the transitionEnd event doesn't fire; set to 0 to not support transition
       indicators: { // classes added to mark states
         shown: 'me-shown', // set to the container as long as it is shown
@@ -1237,24 +1238,23 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
   meShowTransition.prototype.show = function (immediate) {
     var
       that = this,
-      container = that.container;
+      options = that.options,
+      container = that.container,
+      transitionEndElement = options.transitionEndElement || container;
 
-    function _showTransitionEnd() {
-      showTransitionEnd.call(that);
+    function _showTransitionEnd(event) {
+      if (!options.ignoreChildTransitions || !event || !event.target || event.target === transitionEndElement) {
+        showTransitionEnd.call(that);
+      }
     }
 
     if (immediate || that.canShow()) {
       var
-        options = that.options,
-
         callbacks = options.callbacks,
         beforeShowFn = callbacks.beforeShow,
         beforeTransitionFn = callbacks.beforeShowTransition,
 
-        indicators = options.indicators,
-
-        transitionEndElement = options.transitionEndElement || container
-        ;
+        indicators = options.indicators;
 
       // remember that we are showing
       that.showing = true;
@@ -1323,24 +1323,23 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
   meShowTransition.prototype.hide = function (immediate) {
     var
       that = this,
-      container = that.container;
+      options = that.options,
+      container = that.container,
+      transitionEndElement = options.transitionEndElement || container;
 
-    function _hideTransitionEnd() {
-      hideTransitionEnd.call(that);
+    function _hideTransitionEnd(event) {
+      if (!options.ignoreChildTransitions || !event || !event.target || event.target === transitionEndElement) {
+        hideTransitionEnd.call(that);
+      }
     }
 
     if (immediate || !that.canShow()) {
       var
-        options = that.options,
-
         callbacks = options.callbacks,
         beforeHideFn = callbacks.beforeHide,
         beforeTransitionFn = callbacks.beforeHideTransition,
 
-        indicators = options.indicators,
-
-        transitionEndElement = options.transitionEndElement || container
-        ;
+        indicators = options.indicators;
 
       // remember that we are showing
       that.hiding = true;
