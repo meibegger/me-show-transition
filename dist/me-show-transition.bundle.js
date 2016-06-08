@@ -1,5 +1,5 @@
 /**
- * @license me-show-transition 1.0.4 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * @license me-show-transition 1.0.5 Copyright (c) Mandana Eibegger <scripts@schoener.at>
  * Available via the MIT license.
  * see: https://github.com/meibegger/me-show-transition for details
  */
@@ -1094,10 +1094,13 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
 
     that.options = {};
     that.container = null;
+    that.showTransitionStartAnimation = null;
     that.showTransitionEndTimeout = null;
+    that.hideTransitionStartAnimation = null;
     that.hideTransitionEndTimeout = null;
     that.showing = false;
     that.hiding = false;
+    that.hidden = false;
 
     return that;
   }
@@ -1145,6 +1148,9 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
 
     // hide container
     container.style.display = 'none';
+    that.hiding = false;
+    that.hidden = true;
+
     // mark as hidden
     markHidden.call(that);
 
@@ -1155,8 +1161,6 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
         immediate: immediate
       });
     }
-
-    that.hiding = false;
 
     return that;
   }
@@ -1171,6 +1175,7 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
       ;
 
     // clear listeners
+    window.cancelAnimationFrame(that.showTransitionStartAnimation);
     clearTimeout(that.showTransitionEndTimeout);
     meTools.unregisterEvent(that, transitionEndElement, 'webkitTransitionEnd');
     meTools.unregisterEvent(that, transitionEndElement, 'transitionend');
@@ -1199,6 +1204,7 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
       ;
 
     // clear listeners
+    window.cancelAnimationFrame(that.hideTransitionStartAnimation);
     clearTimeout(that.hideTransitionEndTimeout);
     meTools.unregisterEvent(that, transitionEndElement, 'webkitTransitionEnd');
     meTools.unregisterEvent(that, transitionEndElement, 'transitionend');
@@ -1237,8 +1243,7 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
       showTransitionEnd.call(that);
     }
 
-    if (immediate || container.getAttribute('aria-hidden') === 'true' || that.hiding) {
-
+    if (immediate || that.canShow()) {
       var
         options = that.options,
 
@@ -1259,6 +1264,8 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
         hideTransitionEnd.call(that);
       }
 
+      that.hidden = false;
+
       // before show
       if (beforeShowFn) {
         beforeShowFn({
@@ -1278,8 +1285,8 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
         // set a transition-timeout in case the end-event doesn't fire
         that.showTransitionEndTimeout = setTimeout(_showTransitionEnd, options.transitionMaxTime);
 
-        window.requestAnimationFrame(function () { // wait 2 ticks for the browser to apply the visibility
-          window.requestAnimationFrame(function () {
+        that.showTransitionStartAnimation = window.requestAnimationFrame(function () { // wait 2 ticks for the browser to apply the visibility
+          that.showTransitionStartAnimation = window.requestAnimationFrame(function () {
 
             // before transition
             if (beforeTransitionFn) {
@@ -1322,9 +1329,8 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
       hideTransitionEnd.call(that);
     }
 
-    if (immediate || container.getAttribute('aria-hidden') === 'false' || that.showing) {
+    if (immediate || !that.canShow()) {
       var
-
         options = that.options,
 
         callbacks = options.callbacks,
@@ -1360,8 +1366,8 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
         // set a transition-timeout in case the end-event doesn't fire
         that.hideTransitionEndTimeout = setTimeout(_hideTransitionEnd, options.transitionMaxTime);
 
-        window.requestAnimationFrame(function () { // wait 2 ticks for the browser to apply beforeHideFn changes
-          window.requestAnimationFrame(function () {
+        that.hideTransitionStartAnimation = window.requestAnimationFrame(function () { // wait 2 ticks for the browser to apply beforeHideFn changes
+          that.hideTransitionStartAnimation = window.requestAnimationFrame(function () {
 
             // before transition
             if (beforeTransitionFn) {
@@ -1385,6 +1391,13 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
     return that;
   };
 
+  /**
+   *
+   * @returns {boolean} true if the component is in the process of hiding or hidden
+   */
+  meShowTransition.prototype.canShow = function () {
+    return (this.hiding || this.hidden);
+  };
 
   /**
    * Destroy the instance
@@ -1421,7 +1434,7 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
 }));
 
 /**
- * @license me-show-transition 1.0.4 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * @license me-show-transition 1.0.5 Copyright (c) Mandana Eibegger <scripts@schoener.at>
  * Available via the MIT license.
  * see: https://github.com/meibegger/me-show-transition for details
  */
