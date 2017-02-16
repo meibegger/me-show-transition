@@ -1,5 +1,5 @@
 /**
- * @license me-show-transition 1.0.6 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * @license me-show-transition 2.0.0 Copyright (c) Mandana Eibegger <scripts@schoener.at>
  * Available via the MIT license.
  * see: https://github.com/meibegger/me-show-transition for details
  */
@@ -447,7 +447,27 @@ var requirejs, require, define;
 
 define("almond", function(){});
 
-define('variable',[],function () {
+/**
+ * @license me-tools 2.0.1 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * Available via the MIT license.
+ * see: https://github.com/meibegger/me-tools for details
+ */
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define('meTools.fn.variable', [
+    ], factory);
+  } else if(typeof exports === 'object') {
+    if (typeof module === 'object') {
+      module.exports = factory();
+    } else {
+      exports['meTools.fn.variable'] = factory();
+    }
+  } else {
+    root.meTools = root.meTools || {};
+    root.meTools.fn = root.meTools.fn || {};
+    root.meTools.fn.variable = factory();
+  }
+}(this, function () {
 
   /*
    ---------------
@@ -478,7 +498,7 @@ define('variable',[],function () {
           : val);
       }
 
-    } else if (vals && typeof(vals) === 'object' && typeof(vals.tagName) === 'undefined') {
+    } else if (vals && typeof(vals) === 'object' && typeof(vals.tagName) === 'undefined' && vals !== window && vals !== document) {
       copy = {};
       for (var key in vals) {
         val = vals[key];
@@ -554,9 +574,24 @@ define('variable',[],function () {
     isEmptyObject: isEmptyObject
   };
 
-});
+}));
 
-define('element',[],function () {
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define('meTools.fn.element', [
+    ], factory);
+  } else if(typeof exports === 'object') {
+    if (typeof module === 'object') {
+      module.exports = factory();
+    } else {
+      exports['meTools.fn.element'] = factory();
+    }
+  } else {
+    root.meTools = root.meTools || {};
+    root.meTools.fn = root.meTools.fn || {};
+    root.meTools.fn.element = factory();
+  }
+}(this, function () {
 
   /*
    ---------------
@@ -620,7 +655,7 @@ define('element',[],function () {
    * @param selector String; optional; selector to match the parents against
    * @param container DOM-Element; optional; max parent to check; default is body
    * @param single Boolean; optional; return only the next matching ancestor
-   * @return array
+   * @return mixed; array or false/element if single===true
    */
   function getAncestors(element, selector, container, single) {
     // prepare arguments
@@ -628,7 +663,7 @@ define('element',[],function () {
       argSelector = false,
       argContainer = false,
       argSingle = false;
-    for (var i = 0; i < arguments.length; i++) {
+    for (var i = 1; i < arguments.length; i++) {
       switch (typeof(arguments[i])) {
         case 'string':
           argSelector = arguments[i];
@@ -658,7 +693,7 @@ define('element',[],function () {
         if (parent === container) {
           return single ? false : parents;
         }
-        getAncestors(parent);
+        return getAncestors(parent);
       }
       ;
     return getAncestors(element);
@@ -752,9 +787,27 @@ define('element',[],function () {
     addAttributeValues: addAttributeValues,
     removeAttributeValues: removeAttributeValues
   };
-});
 
-define('event',['./variable'],function (variable) {
+}));
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define('meTools.fn.event', [
+      'meTools.fn.variable'
+    ], factory);
+  } else if(typeof exports === 'object') {
+    var fnVariable = require('./variable');
+    if (typeof module === 'object') {
+      module.exports = factory(fnVariable);
+    } else {
+      exports['meTools.fn.event'] = factory(fnVariable);
+    }
+  } else {
+    root.meTools = root.meTools || {};
+    root.meTools.fn = root.meTools.fn || {};
+    root.meTools.fn.event = factory(root.meTools.fn.variable);
+  }
+}(this, function (fnVariable) {
 
   /*
    ---------------
@@ -836,7 +889,7 @@ define('event',['./variable'],function (variable) {
     var typeListeners = registeredEvents[type];
 
     if (!target) {
-      var cTypeListeners = variable.copyValues(typeListeners);
+      var cTypeListeners = fnVariable.copyValues(typeListeners);
       while (cTypeListeners.length) {
         var typeListener = cTypeListeners.shift();
         unregisterEvent(scope, typeListener.tg, type, fn, capture);
@@ -976,13 +1029,34 @@ define('event',['./variable'],function (variable) {
     throttle: throttle,
     debounce: debounce
   };
-});
 
+}));
 
-define('meTools',['variable','element','event'], function (copy,element,event) {
-
-  'use strict';
-
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define('meTools',[
+      'meTools.fn.variable',
+      'meTools.fn.element',
+      'meTools.fn.event'
+    ], factory);
+  } else if(typeof exports === 'object') {
+    var
+      fnVariable = require('./fn/variable'),
+      fnElement = require('./fn/element'),
+      fnEvent = require('./fn/event');
+    if (typeof module === 'object') {
+      module.exports = factory(fnVariable, fnElement, fnEvent);
+    } else {
+      exports.meTools = factory(fnVariable, fnElement, fnEvent);
+    }
+  } else {
+    var meTools = root.meTools;
+    root.meTools = factory(meTools.fn.variable, meTools.fn.element, meTools.fn.event);
+    for (var i in meTools) {
+      root.meTools[i] = meTools[i];
+    }
+  }
+}(this, function (fnVariable, fnElement, fnEvent) {
   var api = {};
   for (var i in arguments) {
     for (var j in arguments[i]) {
@@ -992,7 +1066,9 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
 
   return api;
 
-});
+}));
+
+
 /**
  * Uses classList - possibly use a polyfill for older browsers (http://caniuse.com/#feat=classlist)
  * Uses animationFrame - possibly use a polyfill for older browsers (http://caniuse.com/#feat=requestanimationframe)
@@ -1050,7 +1126,7 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
    *
    * meShowTransition(container [,show] [,options])
    *
-   * @param container mixed; id or element; the container in which the focus should be maintained
+   * @param container mixed; id or element; the container to show/hide
    * @param show boolean; optional; show the container immediately (without transitions) onInit; default is false
    * @param options object; optional; overwrite the default options
    */
@@ -1391,7 +1467,6 @@ define('meTools',['variable','element','event'], function (copy,element,event) {
   };
 
   /**
-   *
    * @returns {boolean} true if the component is in the process of hiding or hidden
    */
   meShowTransition.prototype.canShow = function () {

@@ -55,7 +55,7 @@
    *
    * meShowTransition(container [,show] [,options])
    *
-   * @param container mixed; id or element; the container in which the focus should be maintained
+   * @param container mixed; id or element; the container to show/hide
    * @param show boolean; optional; show the container immediately (without transitions) onInit; default is false
    * @param options object; optional; overwrite the default options
    */
@@ -396,7 +396,6 @@
   };
 
   /**
-   *
    * @returns {boolean} true if the component is in the process of hiding or hidden
    */
   meShowTransition.prototype.canShow = function () {
