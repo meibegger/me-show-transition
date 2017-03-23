@@ -5,11 +5,17 @@
 
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
-    define(['meTools'], factory);
+    define(['me-tools'], factory);
   } else if (typeof exports === 'object') {
-    module.exports = factory(meTools);
+    var
+      meTools = require('me-tools');
+    if (typeof module === 'object') {
+      module.exports = factory(meTools);
+    } else {
+      exports.meShowTransition = factory(meTools);
+    }
   } else {
-    root.meShowTransition = factory(meTools);
+    root.meShowTransition = factory(root.meTools);
   }
 }(this, function (meTools) {
 

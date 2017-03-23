@@ -24,10 +24,7 @@
           "paths": {
             "almond": "../node_modules/almond/almond",
             "meShowTransition": "index",
-            "meTools": "../node_modules/me-tools/dist/me-tools",
-            "variable": "../node_modules/me-tools/src/fn/variable",
-            "element": "../node_modules/me-tools/src/fn/element",
-            "event": "../node_modules/me-tools/src/fn/event"
+            "me-tools": "../node_modules/me-tools/dist/me-tools"
           }
         }
       },
@@ -50,7 +47,7 @@
           "paths": {
             "almond": "../node_modules/almond/almond",
             "meShowTransition": "index",
-            "meTools": "../node_modules/me-tools/dist/me-tools",
+            "me-tools": "../node_modules/me-tools/dist/me-tools",
             "classListPolyfill": "../node_modules/me-polyfills/src/classList",
             "animationFramePolyfill": "../node_modules/me-polyfills/src/animationFrame"
           },
