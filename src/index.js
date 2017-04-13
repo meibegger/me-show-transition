@@ -21,11 +21,11 @@
 
   var
 
-  /*
-   ---------------
-   settings
-   ---------------
-   */
+    /*
+     ---------------
+     settings
+     ---------------
+     */
 
     defaultOptions = {
       callbacks: { // false or fn(params); params = {container: CONTAINER,immediate:BOOL (immediate show/hide call - no transition)}
@@ -427,6 +427,9 @@
     for (var i in indicators) {
       container.classList.remove(indicators[i]);
     }
+
+    // remove styles
+    container.style.display = '';
 
     // reset properties and remove all references
     initProperties.call(that);
