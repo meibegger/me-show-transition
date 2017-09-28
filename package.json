@@ -1,6 +1,6 @@
 {
   "name": "me-show-transition",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "A highly customizable script to enable CSS transitions on toggle of the display property.",
   "main": "src/index.js",
   "repository": {
