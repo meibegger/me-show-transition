@@ -1,5 +1,5 @@
 /**
- * @license me-show-transition 3.0.1 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * @license me-show-transition 3.0.2 Copyright (c) Mandana Eibegger <scripts@schoener.at>
  * Available via the MIT license.
  * see: https://github.com/meibegger/me-show-transition for details
  */
@@ -1284,7 +1284,8 @@ define("almond", function(){});
         beforeHide: false,
         beforeHideTransition: false,
         afterHideTransition: false,
-        afterHide: false
+        afterHide: false,
+        onDestroy: false,
       },
       transitionEndElement: false, // element to listen to the transitionend event on (default is the container); use this if you use transitions on more than 1 element on show/hide to define the element which ends the transitions
       ignoreChildTransitions: false, // transitionEnd event bubbles - only listen to transitionEnd directly on the container (or transitionEndElement)
@@ -1679,8 +1680,15 @@ define("almond", function(){});
     // remove styles
     container.style.display = '';
 
+    // remove added attributes
+    that.container.removeAttribute('aria-hidden');
+
     // reset properties and remove all references
     initProperties.call(that);
+
+    if (that.options.callbacks.onDestroy) {
+      that.options.callbacks.onDestroy();
+    }
 
     return null;
   };
