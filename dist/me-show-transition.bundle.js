@@ -1,5 +1,5 @@
 /**
- * @license me-show-transition 3.0.2 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * @license me-show-transition 3.0.3 Copyright (c) Mandana Eibegger <scripts@schoener.at>
  * Available via the MIT license.
  * see: https://github.com/meibegger/me-show-transition for details
  */
@@ -1683,12 +1683,12 @@ define("almond", function(){});
     // remove added attributes
     that.container.removeAttribute('aria-hidden');
 
-    // reset properties and remove all references
-    initProperties.call(that);
-
     if (that.options.callbacks.onDestroy) {
       that.options.callbacks.onDestroy();
     }
+
+    // reset properties and remove all references
+    initProperties.call(that);
 
     return null;
   };
@@ -1703,7 +1703,7 @@ define("almond", function(){});
 }));
 
 /**
- * @license me-show-transition 3.0.2 Copyright (c) Mandana Eibegger <scripts@schoener.at>
+ * @license me-show-transition 3.0.3 Copyright (c) Mandana Eibegger <scripts@schoener.at>
  * Available via the MIT license.
  * see: https://github.com/meibegger/me-show-transition for details
  */
