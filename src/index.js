@@ -433,10 +433,12 @@
     container.style.display = '';
 
     // remove added attributes
-    that.container.removeAttribute('aria-hidden');
+    container.removeAttribute('aria-hidden');
 
     if (that.options.callbacks.onDestroy) {
-      that.options.callbacks.onDestroy();
+      that.options.callbacks.onDestroy({
+        container: container,
+      });
     }
 
     // reset properties and remove all references
