@@ -435,12 +435,12 @@
     // remove added attributes
     that.container.removeAttribute('aria-hidden');
 
-    // reset properties and remove all references
-    initProperties.call(that);
-
     if (that.options.callbacks.onDestroy) {
       that.options.callbacks.onDestroy();
     }
+
+    // reset properties and remove all references
+    initProperties.call(that);
 
     return null;
   };
