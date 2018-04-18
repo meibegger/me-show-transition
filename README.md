@@ -108,16 +108,10 @@ myShowTransition = myShowTransition.destroy();
 ```
 
 ## Package managers ##
-You can install meShowTransition using npm or Bower.
+You can install meShowTransition using npm.
 
 ```
 $ npm install me-show-transition
-```
-
-or
-
-```
-$ bower install me-show-transition
 ```
 
 ## License ##
