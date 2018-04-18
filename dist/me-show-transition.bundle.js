@@ -1542,8 +1542,6 @@ define("almond", function(){});
         // init transition-end-handling
         meTools.registerEvent(that, transitionEndElement, 'webkitTransitionEnd', _showTransitionEnd);
         meTools.registerEvent(that, transitionEndElement, 'transitionend', _showTransitionEnd);
-        // set a transition-timeout in case the end-event doesn't fire
-        that.showTransitionEndTimeout = setTimeout(_showTransitionEnd, options.transitionMaxTime);
 
         that.showTransitionStartAnimation = window.requestAnimationFrame(function () { // wait 2 ticks for the browser to apply the visibility
           that.showTransitionStartAnimation = window.requestAnimationFrame(function () {
@@ -1562,6 +1560,8 @@ define("almond", function(){});
             // start show transition and listeners
             container.classList.add(indicators.show);
 
+            // set a transition-timeout in case the end-event doesn't fire
+            that.showTransitionEndTimeout = setTimeout(_showTransitionEnd, options.transitionMaxTime);
           });
         });
 
@@ -1622,8 +1622,6 @@ define("almond", function(){});
         // init transition-end-handling
         meTools.registerEvent(that, transitionEndElement, 'webkitTransitionEnd', _hideTransitionEnd);
         meTools.registerEvent(that, transitionEndElement, 'transitionend', _hideTransitionEnd);
-        // set a transition-timeout in case the end-event doesn't fire
-        that.hideTransitionEndTimeout = setTimeout(_hideTransitionEnd, options.transitionMaxTime);
 
         that.hideTransitionStartAnimation = window.requestAnimationFrame(function () { // wait 2 ticks for the browser to apply beforeHideFn changes
           that.hideTransitionStartAnimation = window.requestAnimationFrame(function () {
@@ -1639,6 +1637,8 @@ define("almond", function(){});
             // start show transition and listeners
             container.classList.add(indicators.hide);
 
+            // set a transition-timeout in case the end-event doesn't fire
+            that.hideTransitionEndTimeout = setTimeout(_hideTransitionEnd, options.transitionMaxTime);
           });
         });
 
